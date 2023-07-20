@@ -9,7 +9,37 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    RETROFIT_VERSION = "2.9.0"
+}
+
 dependencies {
+    // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
+    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+
+    // https://mvnrepository.com/artifact/com.squareup.retrofit2/retrofit
+    implementation "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
+    // https://mvnrepository.com/artifact/com.squareup.retrofit2/converter-jackson
+    implementation "com.squareup.retrofit2:converter-jackson:${RETROFIT_VERSION}"
+    // https://mvnrepository.com/artifact/com.squareup.retrofit2/converter-scalars
+    implementation "com.squareup.retrofit2:converter-scalars:${RETROFIT_VERSION}"
+
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    implementation 'org.slf4j:slf4j-api:2.0.7'
+    // https://mvnrepository.com/artifact/ch.qos.logback/logback-core
+    implementation 'ch.qos.logback:logback-core:1.4.7'
+    // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
+    testImplementation 'ch.qos.logback:logback-classic:1.4.7'
+
+    // https://mvnrepository.com/artifact/commons-codec/commons-codec
+    implementation 'commons-codec:commons-codec:1.15'
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-compress
+    implementation 'org.apache.commons:commons-compress:1.23.0'
+    // https://mvnrepository.com/artifact/org.brotli/dec
+    implementation 'org.brotli:dec:0.1.2'
+
+
+
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
