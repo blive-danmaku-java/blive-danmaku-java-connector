@@ -1,2 +1,3 @@
 rootProject.name = 'blive-danmaku-java-connector'
 
+include 'blive-danmaku-java-packet-utils'

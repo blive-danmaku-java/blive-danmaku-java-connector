@@ -1,0 +1,3 @@
+[submodule "blive-danmaku-java-packet-utils"]
+	path = blive-danmaku-java-packet-utils
+	url = https://github.com/blive-danmaku-java/blive-danmaku-java-packet-utils.git

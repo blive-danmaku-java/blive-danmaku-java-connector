@@ -38,7 +38,7 @@ public class BLiveAPI {
                 .build();
 
         retrofit = new Retrofit.Builder()
-                .baseUrl(Constant.BILIBILI_API_URL)
+                .baseUrl("https://api.live.bilibili.com")
                 .client(okHttpClient)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(JacksonConverterFactory.create())
