@@ -1,10 +1,11 @@
 package net.dengzixu.blivexanmaku.webscoket.client;
 
 
-import net.dengzixu.blivexanmaku.Packet;
-import net.dengzixu.blivexanmaku.PacketBuilder;
-import net.dengzixu.blivexanmaku.enums.Operation;
-import net.dengzixu.blivexanmaku.enums.ProtocolVersion;
+
+import net.dengzixu.blivedanmaku.Packet;
+import net.dengzixu.blivedanmaku.PacketBuilder;
+import net.dengzixu.blivedanmaku.enums.Operation;
+import net.dengzixu.blivedanmaku.enums.ProtocolVersion;
 import net.dengzixu.blivexanmaku.profile.BLiveServerProfile;
 import net.dengzixu.blivexanmaku.profile.BLiveWebsocketClientProfile;
 import okhttp3.OkHttpClient;
@@ -72,7 +73,7 @@ public class DefaultBLiveWebsocketClient extends BLiveWebsocketClient {
 
         // 构建请求
         this.request = new Request.Builder()
-                .url("wss://" + bLiveServerProfile.host() + ":" + bLiveServerProfile.port() + "/sub")
+                .url("wss://" + this.bLiveServerProfile.host() + ":" + this.bLiveServerProfile.port() + "/sub")
                 .build();
     }
 
@@ -120,7 +121,7 @@ public class DefaultBLiveWebsocketClient extends BLiveWebsocketClient {
 
         lastConnectTime = System.currentTimeMillis();
 
-        logger.info("[直播间: {}] 准备第 {} 次重新建立链接……({})", this.roomID, reconnectCounter.get(), reconnectCounter.get());
+        logger.info("[直播间: {}] 重新建立链接……({})", this.roomID, reconnectCounter.get());
 
         // 重新连接
         this.webSocket = okHttpClient.newWebSocket(this.request, this.webSocketListener);

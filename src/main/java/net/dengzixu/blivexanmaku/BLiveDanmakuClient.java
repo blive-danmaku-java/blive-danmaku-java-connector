@@ -3,10 +3,12 @@ package net.dengzixu.blivexanmaku;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.dengzixu.blivedanmaku.Packet;
+import net.dengzixu.blivedanmaku.PacketBuilder;
+import net.dengzixu.blivedanmaku.enums.Operation;
+import net.dengzixu.blivedanmaku.enums.ProtocolVersion;
 import net.dengzixu.blivexanmaku.api.bilibili.live.BLiveAPI;
 import net.dengzixu.blivexanmaku.body.AuthBody;
-import net.dengzixu.blivexanmaku.enums.Operation;
-import net.dengzixu.blivexanmaku.enums.ProtocolVersion;
 import net.dengzixu.blivexanmaku.filter.Filter;
 import net.dengzixu.blivexanmaku.handler.Handler;
 import net.dengzixu.blivexanmaku.profile.BLiveServerProfile;
@@ -22,7 +24,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -198,12 +199,9 @@ public class BLiveDanmakuClient {
         return new WebSocketListener() {
             @Override
             public void onOpen(@NotNull WebSocket webSocket, @NotNull Response response) {
-                // TODO Auth
                 logger.info("[直播间: {}] 准备建立链接", roomID);
 
                 this.auth(webSocket);
-
-                super.onOpen(webSocket, response);
             }
 
             @Override
@@ -211,7 +209,6 @@ public class BLiveDanmakuClient {
                 handlers.forEach(handler -> executor.execute(() -> {
                     handler.doHandler(bytes.toByteArray());
                 }));
-                super.onMessage(webSocket, bytes);
             }
 
             @Override
@@ -228,7 +225,7 @@ public class BLiveDanmakuClient {
             public void onFailure(@NotNull WebSocket webSocket, @NotNull Throwable t, @Nullable Response response) {
                 logger.error("[直播间: {}] 连接意外断开", roomID, t);
 
-                super.onFailure(webSocket, t, response);
+                websocketClient.reconnect();
             }
 
             public void auth(WebSocket webSocket) {
@@ -268,8 +265,6 @@ public class BLiveDanmakuClient {
                 websocketClient.startHeartbeat();
 
             }
-
-
         };
     }
 }
