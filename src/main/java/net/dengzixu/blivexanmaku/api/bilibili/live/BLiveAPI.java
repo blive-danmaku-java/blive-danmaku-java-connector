@@ -1,8 +1,8 @@
 package net.dengzixu.blivexanmaku.api.bilibili.live;
 
-import net.dengzixu.blivexanmaku.constant.Constant;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import retrofit2.Call;
@@ -11,6 +11,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.Query;
 
@@ -53,9 +54,10 @@ public class BLiveAPI {
 
             return response.body();
         } catch (IOException e) {
-            logger.error("API 请求错误", e);
-            return null;
+            logger.error("API [https://api.live.bilibili.com/room/v1/Room/room_init] 请求错误", e);
         }
+
+        return "";
     }
 
     public String roomInit(long roomID) {
@@ -68,15 +70,28 @@ public class BLiveAPI {
 
             return response.body();
         } catch (IOException e) {
-            logger.error("API 请求错误", e);
-            return null;
+            logger.error("API [https://api.live.bilibili.com/room/v1/Danmu/getConf] 请求错误", e);
         }
+        return "";
     }
 
     public String getConf(long roomID) {
         return this.getConf(Long.valueOf(roomID));
     }
 
+    public String getDanmuInfo(Long id, String sessData) {
+        String cookie = StringUtils.isNotBlank(sessData) ? "SESSDATA=" + sessData : "";
+
+        try {
+            Response<String> response = api.getDanmuInfo(id, 0, cookie).execute();
+
+            return response.body();
+        } catch (IOException e) {
+            logger.error("API [https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInf] 请求错误", e);
+        }
+
+        return "";
+    }
 
     private interface API {
         @GET("/room/v1/Room/room_init")
@@ -86,5 +101,9 @@ public class BLiveAPI {
         @GET("/room/v1/Danmu/getConf")
         @Headers({"Content-Type: application/json; charset=UTF-8"})
         Call<String> getConf(@Query("room_id") Long roomID);
+
+        @GET("/xlive/web-room/v1/index/getDanmuInfo")
+        @Headers({"Content-Type: application/json; charset=UTF-8"})
+        Call<String> getDanmuInfo(@Query("id") Long id, @Query("type") int type, @Header("Cookie") String Cookie);
     }
 }
