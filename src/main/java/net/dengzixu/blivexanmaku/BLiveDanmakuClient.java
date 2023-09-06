@@ -8,9 +8,11 @@ import net.dengzixu.blivedanmaku.PacketBuilder;
 import net.dengzixu.blivedanmaku.enums.Operation;
 import net.dengzixu.blivedanmaku.enums.ProtocolVersion;
 import net.dengzixu.blivexanmaku.api.bilibili.live.BLiveAPI;
+import net.dengzixu.blivexanmaku.api.bilibili.live.BiliAPI;
 import net.dengzixu.blivexanmaku.body.AuthBody;
 import net.dengzixu.blivexanmaku.filter.Filter;
 import net.dengzixu.blivexanmaku.handler.Handler;
+import net.dengzixu.blivexanmaku.profile.BLiveAuthProfile;
 import net.dengzixu.blivexanmaku.profile.BLiveServerProfile;
 import net.dengzixu.blivexanmaku.profile.BLiveWebsocketClientProfile;
 import net.dengzixu.blivexanmaku.webscoket.client.BLiveWebsocketClient;
@@ -19,6 +21,7 @@ import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 import okio.ByteString;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -38,6 +41,8 @@ public class BLiveDanmakuClient {
 
     // 房间号
     private final Long roomID;
+    // 认证配置
+    private final BLiveAuthProfile bLiveAuthProfile;
     // 弹幕服务器配置
     private final BLiveServerProfile bLiveServerProfile;
     // Websocket 客户端配置
@@ -63,9 +68,11 @@ public class BLiveDanmakuClient {
      * @param bLiveWebsocketClientProfile Websocket 客户端配置
      */
     private BLiveDanmakuClient(Long roomID,
+                               BLiveAuthProfile bLiveAuthProfile,
                                BLiveServerProfile bLiveServerProfile,
                                BLiveWebsocketClientProfile bLiveWebsocketClientProfile) {
         this.roomID = roomID;
+        this.bLiveAuthProfile = bLiveAuthProfile;
         this.bLiveServerProfile = bLiveServerProfile;
         this.bLiveWebsocketClientProfile = bLiveWebsocketClientProfile;
 
@@ -84,12 +91,14 @@ public class BLiveDanmakuClient {
      * @return 弹幕客户端实例
      */
     public static BLiveDanmakuClient getInstance(Long roomID,
+                                                 BLiveAuthProfile bLiveAuthProfile,
                                                  BLiveServerProfile bLiveServerProfile,
                                                  BLiveWebsocketClientProfile bLiveWebsocketClientProfile) {
         if (null == instanceMap.get(roomID)) {
             synchronized (BLiveDanmakuClient.class) {
                 if (null == instanceMap.get(roomID)) {
                     instanceMap.put(roomID, new BLiveDanmakuClient(roomID,
+                            bLiveAuthProfile,
                             bLiveServerProfile,
                             bLiveWebsocketClientProfile));
                 }
@@ -107,11 +116,25 @@ public class BLiveDanmakuClient {
      * @return 弹幕客户端实例
      */
     public static BLiveDanmakuClient getInstance(long roomID,
+                                                 BLiveAuthProfile bLiveAuthProfile,
                                                  BLiveServerProfile bLiveServerProfile,
                                                  BLiveWebsocketClientProfile bLiveWebsocketClientProfile) {
         return getInstance(Long.valueOf(roomID),
+                bLiveAuthProfile,
                 bLiveServerProfile,
                 bLiveWebsocketClientProfile);
+    }
+
+    /**
+     * @param roomID           房间号
+     * @param bLiveAuthProfile 认证配置
+     * @return 弹幕客户端实例
+     */
+    public static BLiveDanmakuClient getInstance(long roomID, BLiveAuthProfile bLiveAuthProfile) {
+        return getInstance(roomID,
+                bLiveAuthProfile,
+                BLiveServerProfile.getDefault(),
+                BLiveWebsocketClientProfile.getDefault());
     }
 
     /**
@@ -122,6 +145,7 @@ public class BLiveDanmakuClient {
      */
     public static BLiveDanmakuClient getInstance(long roomID) {
         return getInstance(roomID,
+                BLiveAuthProfile.getAnonymous(),
                 BLiveServerProfile.getDefault(),
                 BLiveWebsocketClientProfile.getDefault());
     }
@@ -201,7 +225,11 @@ public class BLiveDanmakuClient {
             public void onOpen(@NotNull WebSocket webSocket, @NotNull Response response) {
                 logger.info("[直播间: {}] 准备建立链接", roomID);
 
-                this.auth(webSocket);
+                try {
+                    this.auth(webSocket);
+                } catch (Exception e) {
+                    logger.error("[直播间: {}] 身份认证失败", roomID, e);
+                }
             }
 
             @Override
@@ -228,34 +256,58 @@ public class BLiveDanmakuClient {
                 websocketClient.reconnect();
             }
 
-            public void auth(WebSocket webSocket) {
+            public void auth(WebSocket webSocket) throws JsonProcessingException {
                 logger.info("[直播间: {}] 进行身份认证……", roomID);
 
-                BLiveAPI bLiveAPI = new BLiveAPI();
+                // BLiveAPI
+                final BLiveAPI bLiveAPI = new BLiveAPI();
+                // BiliAPI
+                final BiliAPI biliAPI = new BiliAPI();
 
-                String token = "";
-                long anchorUID = 0L;
+//                String token = "";
+//                long anchorUID = 0L;
 
                 // 获取 Token 与主播 UID
-                try {
-                    token = new ObjectMapper()
-                            .readValue(bLiveAPI.getConf(roomID), JsonNode.class)
-                            .get("data").get("token").asText();
+//                token = new ObjectMapper()
+//                        .readValue(bLiveAPI.getConf(roomID), JsonNode.class)
+//                        .get("data").get("token").asText();
+//
+//                anchorUID = new ObjectMapper()
+//                        .readValue(bLiveAPI.roomInit(roomID), JsonNode.class)
+//                        .get("data").get("uid").asLong();
+//
+//                logger.info("[直播间: {}] 主播 UID: {}", roomID, anchorUID);
 
-                    anchorUID = new ObjectMapper()
-                            .readValue(bLiveAPI.roomInit(roomID), JsonNode.class)
-                            .get("data").get("uid").asLong();
+                // 获取 Token
+                JsonNode danmuInfoJsonNode = new ObjectMapper()
+                        .readValue(bLiveAPI.getDanmuInfo(roomID, bLiveAuthProfile.sessData()), JsonNode.class);
+                String token = danmuInfoJsonNode.get("data").get("token").asText();
 
-                    logger.info("[直播间: {}] 主播 UID: {}", roomID, anchorUID);
-                } catch (JsonProcessingException e) {
-                    logger.error("JSON 转换失败", e);
-                    throw new RuntimeException(e);
+                // 获取认证用的 UID
+                Long authUID = bLiveAuthProfile.uid();
+                // 判断 UID 为 0 时，或 sessData 为空时，如果未设置，UID 取 0
+                if (authUID.equals(0L) || StringUtils.isBlank(bLiveAuthProfile.sessData())) {
+                    logger.warn("[直播间: {}] 未设置认证 UID，使用匿名模式。建议正确配置 UID 与 SESSDATA 避免出现连接中断等问题。", roomID);
+                    authUID = 0L;
+                } else if (!authUID.equals(0L) && StringUtils.isBlank(bLiveAuthProfile.sessData())) {
+                    logger.warn("[直播间: {}] 已设置认证 UID，但未设置 SESSDATA，使用匿名模式。建议正确配置 UID 与 SESSDATA 避免出现连接中断等问题", roomID);
+
+                    authUID = 0L;
                 }
+                logger.info("[直播间: {}] 使用认证 UID: {}", roomID, authUID);
+
+                // 获取 buvid3
+                JsonNode spiJsonNode = new ObjectMapper()
+                        .readValue(biliAPI.spi(), JsonNode.class);
+
+                String buvid = spiJsonNode.get("data").get("b_3").asText();
+                logger.info("[直播间: {}] 获取到 buvid: {}", roomID, buvid);
+
                 // 构建 Packet
                 Packet packet = PacketBuilder.newBuilder()
-                        .protocolVersion(ProtocolVersion.NORMAL)
+                        .protocolVersion(ProtocolVersion.HEARTBEAT)
                         .operation(Operation.USER_AUTHENTICATION)
-                        .body(new AuthBody(anchorUID, roomID, token).toJsonBytes())
+                        .body(new AuthBody(authUID, roomID, buvid, token).toJsonBytes())
                         .build();
 
                 // 发送 Packet
@@ -263,7 +315,6 @@ public class BLiveDanmakuClient {
 
                 // 发送心跳包
                 websocketClient.startHeartbeat();
-
             }
         };
     }
