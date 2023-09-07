@@ -1,7 +1,7 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.dengzixu.blivexanmaku.api.bilibili.live.BLiveAPI;
+import net.dengzixu.blivedanmaku.api.bilibili.live.BLiveAPI;
 import org.junit.jupiter.api.Test;
 
 public class BLiveAPITest {

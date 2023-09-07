@@ -1,4 +1,4 @@
-package net.dengzixu.blivexanmaku.profile;
+package net.dengzixu.blivedanmaku.profile;
 
 public record BLiveAuthProfile(Long uid, String sessData) {
 

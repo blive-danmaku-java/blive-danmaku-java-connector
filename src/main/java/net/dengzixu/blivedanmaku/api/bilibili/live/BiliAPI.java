@@ -1,4 +1,4 @@
-package net.dengzixu.blivexanmaku.api.bilibili.live;
+package net.dengzixu.blivedanmaku.api.bilibili.live;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

@@ -1,32 +1,26 @@
-import net.dengzixu.blivexanmaku.BLiveDanmakuClient;
-import net.dengzixu.blivexanmaku.Packet;
-import net.dengzixu.blivexanmaku.PacketResolver;
-import net.dengzixu.blivexanmaku.enums.Operation;
-import net.dengzixu.blivexanmaku.handler.Handler;
+import net.dengzixu.blivedanmaku.Packet;
+import net.dengzixu.blivedanmaku.PacketResolver;
+import net.dengzixu.blivedanmaku.BLiveDanmakuClient;
+import net.dengzixu.blivedanmaku.profile.BLiveAuthProfile;
 
 import java.util.List;
 
 public class BLiveDanmakuClientTest {
 
-    private static final long ROOM_ID = 77274;
+    private static final long ROOM_ID = 13308358;
 
     public static void main(String[] args) {
-        BLiveDanmakuClient bLiveDanmakuClient = BLiveDanmakuClient.getInstance(ROOM_ID);
+        final BLiveAuthProfile bLiveAuthProfile = new BLiveAuthProfile(4283693, "1d97b4bd,1709224198,1efdd*91");
 
-        bLiveDanmakuClient.addHandler(new Handler() {
-            @Override
-            public void doHandler(byte[] bytes) {
-                PacketResolver packetResolver = new PacketResolver(bytes);
+        BLiveDanmakuClient bLiveDanmakuClient = BLiveDanmakuClient.getInstance(ROOM_ID, bLiveAuthProfile);
 
-                List<Packet> packets = packetResolver.resolve();
+        bLiveDanmakuClient.addHandler(bytes -> {
+            PacketResolver packetResolver = new PacketResolver(bytes);
 
-                packets.forEach(packet -> {
-                    if (packet.operation().equals(Operation.MESSAGE)) {
-                        System.out.println(new String(packet.body()));
-                    }
-                });
+            List<Packet> packets = packetResolver.resolve();
 
-            }
+            packets.forEach(System.out::println);
+
         });
 
         bLiveDanmakuClient.connect();

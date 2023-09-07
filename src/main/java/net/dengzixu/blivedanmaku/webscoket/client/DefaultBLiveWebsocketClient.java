@@ -1,4 +1,4 @@
-package net.dengzixu.blivexanmaku.webscoket.client;
+package net.dengzixu.blivedanmaku.webscoket.client;
 
 
 
@@ -6,8 +6,8 @@ import net.dengzixu.blivedanmaku.Packet;
 import net.dengzixu.blivedanmaku.PacketBuilder;
 import net.dengzixu.blivedanmaku.enums.Operation;
 import net.dengzixu.blivedanmaku.enums.ProtocolVersion;
-import net.dengzixu.blivexanmaku.profile.BLiveServerProfile;
-import net.dengzixu.blivexanmaku.profile.BLiveWebsocketClientProfile;
+import net.dengzixu.blivedanmaku.profile.BLiveServerProfile;
+import net.dengzixu.blivedanmaku.profile.BLiveWebsocketClientProfile;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.WebSocket;

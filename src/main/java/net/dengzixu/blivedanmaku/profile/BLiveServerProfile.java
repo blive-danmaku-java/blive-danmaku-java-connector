@@ -1,4 +1,4 @@
-package net.dengzixu.blivexanmaku.profile;
+package net.dengzixu.blivedanmaku.profile;
 
 /**
  * WebSocket 服务器配置

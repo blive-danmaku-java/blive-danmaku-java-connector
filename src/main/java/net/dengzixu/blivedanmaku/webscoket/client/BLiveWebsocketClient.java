@@ -1,4 +1,4 @@
-package net.dengzixu.blivexanmaku.webscoket.client;
+package net.dengzixu.blivedanmaku.webscoket.client;
 
 public abstract class BLiveWebsocketClient {
     /**
