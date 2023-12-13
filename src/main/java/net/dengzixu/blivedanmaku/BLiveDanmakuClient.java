@@ -3,11 +3,11 @@ package net.dengzixu.blivedanmaku;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.dengzixu.blivedanmaku.enums.Operation;
-import net.dengzixu.blivedanmaku.enums.ProtocolVersion;
 import net.dengzixu.blivedanmaku.api.bilibili.live.BLiveAPI;
 import net.dengzixu.blivedanmaku.api.bilibili.live.BiliAPI;
 import net.dengzixu.blivedanmaku.body.AuthBody;
+import net.dengzixu.blivedanmaku.enums.Operation;
+import net.dengzixu.blivedanmaku.enums.ProtocolVersion;
 import net.dengzixu.blivedanmaku.filter.Filter;
 import net.dengzixu.blivedanmaku.handler.Handler;
 import net.dengzixu.blivedanmaku.profile.BLiveAuthProfile;
@@ -261,20 +261,6 @@ public class BLiveDanmakuClient {
                 final BLiveAPI bLiveAPI = new BLiveAPI();
                 // BiliAPI
                 final BiliAPI biliAPI = new BiliAPI();
-
-//                String token = "";
-//                long anchorUID = 0L;
-
-                // 获取 Token 与主播 UID
-//                token = new ObjectMapper()
-//                        .readValue(bLiveAPI.getConf(roomID), JsonNode.class)
-//                        .get("data").get("token").asText();
-//
-//                anchorUID = new ObjectMapper()
-//                        .readValue(bLiveAPI.roomInit(roomID), JsonNode.class)
-//                        .get("data").get("uid").asLong();
-//
-//                logger.info("[直播间: {}] 主播 UID: {}", roomID, anchorUID);
 
                 // 获取 Token
                 JsonNode danmuInfoJsonNode = new ObjectMapper()

@@ -1,7 +1,6 @@
 package net.dengzixu.blivedanmaku.webscoket.client;
 
 
-
 import net.dengzixu.blivedanmaku.Packet;
 import net.dengzixu.blivedanmaku.PacketBuilder;
 import net.dengzixu.blivedanmaku.enums.Operation;
