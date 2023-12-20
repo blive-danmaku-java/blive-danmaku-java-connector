@@ -23,11 +23,11 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'
 
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-    implementation 'org.slf4j:slf4j-api:2.0.7'
+    implementation 'org.slf4j:slf4j-api:2.0.9'
     // https://mvnrepository.com/artifact/ch.qos.logback/logback-core
-    implementation 'ch.qos.logback:logback-core:1.4.7'
+    implementation 'ch.qos.logback:logback-core:1.4.14'
     // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
-    testImplementation 'ch.qos.logback:logback-classic:1.4.7'
+    testImplementation 'ch.qos.logback:logback-classic:1.4.14'
 
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
     implementation 'org.apache.commons:commons-lang3:3.12.0'
