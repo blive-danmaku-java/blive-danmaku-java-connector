@@ -9,9 +9,6 @@ repositories {
     mavenCentral()
 }
 
-java {
-    sourceCompatibility = '17'
-}
 dependencies {
     implementation project(':blive-danmaku-java-packet-utils')
 
