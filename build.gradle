@@ -9,22 +9,21 @@ repositories {
     mavenCentral()
 }
 
-ext {
-    RETROFIT_VERSION = "2.9.0"
+java {
+    sourceCompatibility = '17'
 }
-
 dependencies {
     implementation project(':blive-danmaku-java-packet-utils')
 
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.16.0'
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.0'
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.16.0'
+
     // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'
-
-    // https://mvnrepository.com/artifact/com.squareup.retrofit2/retrofit
-    implementation "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
-    // https://mvnrepository.com/artifact/com.squareup.retrofit2/converter-jackson
-    implementation "com.squareup.retrofit2:converter-jackson:${RETROFIT_VERSION}"
-    // https://mvnrepository.com/artifact/com.squareup.retrofit2/converter-scalars
-    implementation "com.squareup.retrofit2:converter-scalars:${RETROFIT_VERSION}"
 
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     implementation 'org.slf4j:slf4j-api:2.0.7'
